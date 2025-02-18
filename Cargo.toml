@@ -1,0 +1,22 @@
+cargo-features = ["per-package-target", "edition2024"]
+
+[package]
+readme = "README.md"
+homepage = "https://github.com/gabrielfalcao/thread-group"
+name = "thread-group"
+version = "0.1.0"
+edition = "2021"
+autobins = false
+autoexamples = false
+autobenches = false
+default-target = "aarch64-apple-darwin"
+[package.metadata]
+cargo-args = ["-Zmtime-on-use", "-Zavoid-dev-deps", "-Zcustom_mir"]
+targets = [
+    "aarch64-apple-darwin",
+]
+
+
+[lib]
+name = "thread_group"
+path = "thread_group.rs"
