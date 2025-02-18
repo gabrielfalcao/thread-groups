@@ -4,12 +4,15 @@ cargo-features = ["per-package-target", "edition2024"]
 readme = "README.md"
 homepage = "https://github.com/gabrielfalcao/thread-group"
 name = "thread-group"
+description = "ThreadGroup is a tool that spawns several threads so you can wait for their completion and enjoy the silence of your life in the real world."
+license = "MIT"
 version = "0.0.1"
 edition = "2021"
 autobins = false
 autoexamples = false
 autobenches = false
 default-target = "aarch64-apple-darwin"
+
 [package.metadata]
 cargo-args = ["-Zmtime-on-use", "-Zavoid-dev-deps", "-Zcustom_mir"]
 targets = [
