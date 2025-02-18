@@ -15,9 +15,6 @@ default-target = "aarch64-apple-darwin"
 
 [package.metadata]
 cargo-args = ["-Zmtime-on-use", "-Zavoid-dev-deps", "-Zcustom_mir"]
-targets = [
-    "aarch64-apple-darwin",
-]
 
 
 [lib]
