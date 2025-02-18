@@ -1,4 +1,4 @@
-//! Thread Group is a simple tool for spawing several threads and waiting for all to complete - i.e.: join - at once.
+//! Thread Groups is a simple tool for spawing several threads and waiting for all to complete - i.e.: join - at once.
 //!
 //! It provides the [`ThreadGroup`] struct which does all the job for
 //! you so you can wait and enjoy the silence of your life in

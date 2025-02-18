@@ -1,4 +1,4 @@
-# Thread Group
+# Thread Groups
 
 ThreadGroup is a tool that spawns several threads so you can wait for
 their completion and enjoy the silence of your life in the real world.
