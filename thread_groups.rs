@@ -47,7 +47,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
 
     /// `ThreadGroup::spawn` spawns a thread
     pub fn spawn<F: FnOnce() -> T + Send + 'static>(&mut self, func: F) -> Result<()> {
-        assert_eq!(self.handles.len(), self.count);
         self.count += 1;
         let name = format!("{}:{}", &self.id, self.count);
         self.handles.push_front(
@@ -55,7 +54,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
                 Error::ThreadJoinError(format!("spawning thread {}: {:#?}", name, e))
             })?,
         );
-        assert_eq!(self.handles.len(), self.count);
         Ok(())
     }
 
@@ -63,7 +61,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
     /// blocking fashion, returning the result of that threads
     /// [`FnOnce`]
     pub fn join(&mut self) -> Result<T> {
-        assert_eq!(self.handles.len(), self.count);
         let handle = self
             .handles
             .pop_front()
@@ -84,7 +81,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
             }
         };
         self.count -= 1;
-        assert_eq!(self.handles.len(), self.count);
         end
     }
 
