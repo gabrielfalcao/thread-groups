@@ -14,23 +14,20 @@ jobs:
         with:
             toolchain: nightly
             override: true
-            components: rustfmt, clippy
-
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
           command: test
   doc:
     name: cargo doc
-    runs-on: ubuntu-ladoc
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install ladoc nightly
+      - name: Install latest nightly
         uses: actions-rs/toolchain@v1
         with:
             toolchain: nightly
             override: true
-            components: rustfmt, clippy
 
       - name: Run cargo doc
         uses: actions-rs/cargo@v1
