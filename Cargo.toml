@@ -11,7 +11,6 @@ edition = "2024"
 autobins = false
 autoexamples = false
 autobenches = false
-default-target = "aarch64-apple-darwin"
 
 [package.metadata]
 cargo-args = ["-Zmtime-on-use", "-Zavoid-dev-deps", "-Zcustom_mir"]
