@@ -120,7 +120,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
     pub fn errors(&self) -> BTreeMap<String, Error> {
         self.errors.clone()
     }
-
 }
 
 impl<T> std::fmt::Display for ThreadGroup<T> {
