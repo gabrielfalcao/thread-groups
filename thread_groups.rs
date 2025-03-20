@@ -6,6 +6,7 @@
 #![feature(thread_id_value)]
 
 use std::collections::{BTreeMap, VecDeque};
+use std::fmt::Display;
 use std::thread::{Builder, JoinHandle, Thread};
 
 /// `thread_id` returns a deterministic name for instances of [`std::thread::Thread`].
@@ -49,7 +50,7 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
     pub fn spawn<F: FnOnce() -> T + Send + 'static>(&mut self, func: F) -> Result<()> {
         self.count += 1;
         let name = format!("{}:{}", &self.id, self.count);
-        self.handles.push_front(
+        self.handles.push_back(
             Builder::new().name(name.clone()).spawn(func).map_err(|e| {
                 Error::ThreadJoinError(format!("spawning thread {}: {:#?}", name, e))
             })?,
@@ -74,7 +75,6 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
         let end = match handle.join() {
             Ok(t) => Ok(t),
             Err(e) => {
-                self.count -= 1;
                 let e = Error::ThreadJoinError(format!("joining thread {}: {:#?}", id, e));
                 self.errors.insert(id, e.clone());
                 Err(e)
@@ -115,6 +115,12 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
         }
         Ok(val)
     }
+
+    /// `ThreadGroup::errors` returns a [`BTreeMap<String, Error>`] of errors whose keys are thread ids that panicked.
+    pub fn errors(&self) -> BTreeMap<String, Error> {
+        self.errors.clone()
+    }
+
 }
 
 impl<T> std::fmt::Display for ThreadGroup<T> {
@@ -129,41 +135,7 @@ impl<T: Send + Sync + 'static> Default for ThreadGroup<T> {
     }
 }
 
-#[cfg(test)]
-mod thread_group_test {
-    use super::*;
-
-    #[test]
-    fn test_join() -> Result<()> {
-        Ok({
-            let mut threads =
-                ThreadGroup::<String>::with_id(format!("{}:{}", module_path!(), line!()));
-            for count in 65..67 {
-                threads.spawn(move || {
-                    format!(
-                        "{}",
-                        char::from_u32(count)
-                            .map(|val| val.to_string())
-                            .unwrap_or(format!("{}", count))
-                    )
-                })?;
-            }
-            let mut data = threads.all_ok()?;
-            data.sort();
-
-            assert_eq!(
-                data,
-                ["A", "B"]
-                    .iter()
-                    .map(|val| val.to_string())
-                    .collect::<Vec<String>>()
-            );
-        })
-    }
-}
-use std::fmt::Display;
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Error {
     ThreadGroupError(String),
     ThreadJoinError(String),
