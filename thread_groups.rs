@@ -3,7 +3,6 @@
 //! It provides the [`ThreadGroup`] struct which does all the job for
 //! you so you can wait and enjoy the silence of your life in
 //! the real world.
-#![feature(thread_id_value)]
 
 use std::collections::{BTreeMap, VecDeque};
 use std::fmt::Display;
@@ -17,7 +16,7 @@ pub fn thread_id(thread: &Thread) -> String {
         thread
             .name()
             .map(|a| a.to_string())
-            .unwrap_or_else(|| format!("{}", thread.id().as_u64()))
+            .unwrap_or_else(|| format!("{:#?}", thread.id()))
             .to_string()
     )
 }

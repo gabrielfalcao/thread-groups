@@ -1,5 +1,3 @@
-cargo-features = ["per-package-target"]
-
 [package]
 readme = "README.md"
 homepage = "https://github.com/gabrielfalcao/thread-groups"
