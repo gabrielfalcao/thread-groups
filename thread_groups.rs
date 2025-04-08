@@ -51,7 +51,7 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
         let name = format!("{}:{}", &self.id, self.count);
         self.handles.push_back(
             Builder::new().name(name.clone()).spawn(func).map_err(|e| {
-                Error::ThreadJoinError(format!("spawning thread {}: {:#?}", name, e))
+                Error::ThreadSpawnError(format!("spawning thread {}: {:#?}", name, e))
             })?,
         );
         Ok(())
@@ -64,10 +64,7 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
         let handle = self
             .handles
             .pop_front()
-            .ok_or(Error::ThreadGroupError(format!(
-                "no threads in group {}",
-                &self
-            )))?;
+            .ok_or(Error::ThreadGroupError(format!("no threads in group {}", &self)))?;
 
         let id = thread_id(&handle.thread());
 
@@ -77,7 +74,7 @@ impl<T: Send + Sync + 'static> ThreadGroup<T> {
                 let e = Error::ThreadJoinError(format!("joining thread {}: {:#?}", id, e));
                 self.errors.insert(id, e.clone());
                 Err(e)
-            }
+            },
         };
         self.count -= 1;
         end
@@ -137,6 +134,7 @@ impl<T: Send + Sync + 'static> Default for ThreadGroup<T> {
 pub enum Error {
     ThreadGroupError(String),
     ThreadJoinError(String),
+    ThreadSpawnError(String),
 }
 
 impl Display for Error {
@@ -146,8 +144,9 @@ impl Display for Error {
             "{}{}",
             self.prefix().unwrap_or_default(),
             match self {
-                Self::ThreadGroupError(s) => format!("{}", s),
-                Self::ThreadJoinError(s) => format!("{}", s),
+                Self::ThreadGroupError(s)
+                | Self::ThreadJoinError(s)
+                | Self::ThreadSpawnError(s) => format!("{}", s),
             }
         )
     }
@@ -158,6 +157,7 @@ impl Error {
         match self {
             Error::ThreadGroupError(_) => "ThreadGroupError",
             Error::ThreadJoinError(_) => "ThreadJoinError",
+            Error::ThreadSpawnError(_) => "ThreadSpawnError",
         }
         .to_string()
     }
